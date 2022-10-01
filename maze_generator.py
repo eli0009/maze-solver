@@ -3,6 +3,16 @@ from random import randint, choice
 
 class Maze:
     """Generate a size x size maze
+
+    How to work with this class:
+    self.start: initial position
+    self.end: end position
+    self.maze: the maze (2d matrix)
+    
+    self.is_wall(x, y): check if a position is a wall
+    self.get_moves(x, y): get a list of all possible NEWS moves for a position
+    self.display(): print the maze to terminal
+    
     """
 
     def __init__(self, size = 5) -> None:
@@ -34,6 +44,20 @@ class Maze:
 
         self.start = start
         self.end = end
+
+    def get_moves(self, x, y):
+        '''Get all possible moves for a position
+        return a tuple of all possible positions
+        '''
+        adj = [(x - 1, y),
+               (x + 1, y),
+               (x, y + 1),
+               (x, y - 1),
+               ]      
+        return tuple(
+            cell for cell in adj
+            if not self.is_wall(*cell)
+        )
 
     def generate(self):
         '''Generate a maze'''
@@ -133,4 +157,4 @@ if __name__ == "__main__":
 
     m = Maze(8)
     m.display()
-
+    print(m.get_moves(*m.start))
