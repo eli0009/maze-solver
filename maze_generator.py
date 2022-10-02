@@ -1,5 +1,4 @@
 from colorama import init, Fore
-from copy import deepcopy
 from random import randint, choice
 
 class Maze:
@@ -40,8 +39,6 @@ class Maze:
         end = choice(self.visited)
         while end == start:
             end = choice(self.visited)
-
-        self.clean_maze = deepcopy(self.maze)
 
         self.flip(*start, '@')
         self.flip(*end, 'e')
