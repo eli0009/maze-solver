@@ -1,4 +1,5 @@
 from colorama import init, Fore
+from copy import deepcopy
 from random import randint, choice
 
 class Maze:
@@ -19,6 +20,7 @@ class Maze:
 
         self.size = size * 2 + 1
         self.visited = []
+        self.moves = []
         wall = 0
         path = 1
 
@@ -39,11 +41,19 @@ class Maze:
         while end == start:
             end = choice(self.visited)
 
-        self.flip(*start, 's')
+        self.clean_maze = deepcopy(self.maze)
+
+        self.flip(*start, '@')
         self.flip(*end, 'e')
 
         self.start = start
         self.end = end
+       
+    def move(self, x, y):
+        '''Move the player to the given location'''
+        self.flip(x, y, value='@')
+        self.flip(*self.start, value = 1)
+        self.start = (x, y)
 
     def get_moves(self, x, y):
         '''Get all possible moves for a position
@@ -103,18 +113,21 @@ class Maze:
         else:
             return None
 
-    def connect_neighbour(self, cell1, cell2):
+    def connect_neighbour(self, cell1, cell2, value=None):
         '''Connect 2 cells separated by a wall'''
         if cell1[0] == cell2[0]:
             if cell1[1] > cell2[1]:
-                self.flip(cell1[0], cell1[1] - 1)
+                x, y = cell1[0], cell1[1] - 1
             else:
-                self.flip(cell1[0], cell1[1] + 1)
+                x, y = cell1[0], cell1[1] + 1
         else:
             if cell1[0] > cell2[0]:
-                self.flip(cell1[0] - 1, cell1[1])
+                x, y = cell1[0] - 1, cell1[1]
             else:
-                self.flip(cell1[0] + 1, cell1[1])
+                x, y = cell1[0] + 1, cell1[1]
+
+        self.flip(x, y, value)
+        return (x, y)
 
     def flip(self, x, y, value=None):
         '''Flip the value of a maze cell between 1 and 0
@@ -142,19 +155,20 @@ class Maze:
         init()
         for i in range(self.size):
             for j in range(self.size):
-
+                x = str(self.maze[j][i])
                 if self.maze[j][i] == 'e':
-                    print(Fore.BLUE, f'{self.maze[j][i]}', end="")
-                elif self.maze[j][i] == 's':
-                    print(Fore.GREEN, f'{self.maze[j][i]}', end="")
+                    color = Fore.BLUE
+                elif self.maze[j][i] == '@':
+                    color = Fore.YELLOW
                 elif self.maze[j][i]:
-                    print(Fore.WHITE, f'{self.maze[j][i]}', end="")
+                    color = Fore.WHITE
                 elif not self.maze[j][i]:
-                    print(Fore.RED, f'{self.maze[j][i]}', end="")
+                    color = Fore.RED
+                print(color, x, end = "")
             print('\n')
 
 if __name__ == "__main__":
 
-    m = Maze(13)
+    m = Maze(11)
     m.display()
     # print(m.get_moves(*m.start))
