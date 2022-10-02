@@ -155,6 +155,6 @@ class Maze:
 
 if __name__ == "__main__":
 
-    m = Maze(8)
+    m = Maze(13)
     m.display()
-    print(m.get_moves(*m.start))
+    # print(m.get_moves(*m.start))
